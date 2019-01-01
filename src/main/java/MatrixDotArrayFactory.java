@@ -21,7 +21,7 @@ public class MatrixDotArrayFactory {
         String fileName = "chars-sample.png";
 //        BufferedImage image = ImageIO.read(new File(fileName));
 
-        BufferedImage image = new BufferedImage(340,340,BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(340,80,BufferedImage.TYPE_INT_RGB);
         Graphics2D g = image.createGraphics();
         int fontSize = 32;
         Font font = new Font("STSong", Font.PLAIN, fontSize);
