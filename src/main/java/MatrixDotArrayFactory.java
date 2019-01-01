@@ -1,6 +1,8 @@
+import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
@@ -16,30 +18,38 @@ public class MatrixDotArrayFactory {
 //
 //                .set
 
-        String fileName = "C:\\Users\\Lovememo\\Desktop\\matrix_dot\\src\\main\\resources\\1.png";//148 °¡ 191
-        fileName = "C:\\Users\\Lovememo\\Desktop\\matrix_dot\\src\\main\\resources\\1.png";//148 °¡ 191
+        String fileName = "chars-sample.png";
 //        BufferedImage image = ImageIO.read(new File(fileName));
 
-        BufferedImage image = Thumbnails.of(fileName)
-                .scale(0.3f)
-                .asBufferedImage();
+        BufferedImage image = new BufferedImage(340,340,BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = image.createGraphics();
+        int fontSize = 32;
+        Font font = new Font("STSong", Font.PLAIN, fontSize);
+        g.setFont(font);
+        g.drawString("ÈéèÂÖâ‰πãÁøºÂä†Ê≤π",0,image.getHeight()-3-3);
+        g.drawString("ÊõôÂÖâÂ∞±Âú®ÂâçÈù¢ÔºåË¶ÅÊå∫‰Ωè",0,image.getHeight()-3-fontSize-3-3);
+
+
+//        BufferedImage image = Thumbnails.of(MatrixDotArrayFactory.class.getResourceAsStream(fileName))
+//                .scale(0.2f)
+//                .asBufferedImage();
 
         int height = image.getHeight();
         int width = image.getWidth();
         Raster data = image.getData();
-        System.out.println(width + " °¡ " + height);
+        System.out.println(width + " √ó " + height);
         int[][] outMatrix = new int[height][width];
-        for (int i = 0; i < height; i++) {//––
-            for (int j = 0; j < width; j++) {//¡–
+        for (int i = 0; i < height; i++) {//Ë°å
+            for (int j = 0; j < width; j++) {//Âàó
                 int[] rgb = new int[3];
-                data.getPixel(j, i, rgb);//µ⁄“ª∏ˆ≤Œ ˝Œ™¡– µ⁄∂˛∏ˆ≤Œ ˝Œ™––
+                data.getPixel(j, i, rgb);//Á¨¨‰∏Ä‰∏™ÂèÇÊï∞‰∏∫Âàó Á¨¨‰∫å‰∏™ÂèÇÊï∞‰∏∫Ë°å
                 outMatrix[i][j] = calcBinaryValue(rgb);
             }
         }
 
-        for (int i = 0; i < height; i++) {//––
+        for (int i = 0; i < height; i++) {//Ë°å
             System.out.print("[");
-            for (int j = 0; j < width; j++) {//¡–
+            for (int j = 0; j < width; j++) {//Âàó
                 System.out.print(outMatrix[i][j]);
                 if(j != width -1) {
                     System.out.print(", ");
@@ -55,52 +65,11 @@ public class MatrixDotArrayFactory {
         int gray = (rgb[0] * 19595 + rgb[1] * 38469 + rgb[2] * 7472) >> 16;
         int THRESHOLD = 127;
         if (gray >= THRESHOLD) {
-            return 0;
-        } else {
             return 1;
+        } else {
+            return 0;
         }
     }
 
 
-    private int getThreshold(int[] inPixels, int height, int width) {
-        // maybe this value can reduce the calculation consume;
-        int inithreshold = 127;
-        int finalthreshold = 0;
-        int temp[] = new int[inPixels.length];
-        for (int index = 0; index < inPixels.length; index++) {
-            temp[index] = (inPixels[index] >> 16) & 0xff;
-        }
-        List<Integer> sub1 = new ArrayList<Integer>();
-        List<Integer> sub2 = new ArrayList<Integer>();
-        int means1 = 0, means2 = 0;
-        while (finalthreshold != inithreshold) {
-            finalthreshold = inithreshold;
-            for (int i = 0; i < temp.length; i++) {
-                if (temp[i] <= inithreshold) {
-                    sub1.add(temp[i]);
-                } else {
-                    sub2.add(temp[i]);
-                }
-            }
-            means1 = getMeans(sub1);
-            means2 = getMeans(sub2);
-            sub1.clear();
-            sub2.clear();
-            inithreshold = (means1 + means2) / 2;
-        }
-        long start = System.currentTimeMillis();
-        System.out.println("Final threshold  = " + finalthreshold);
-        long endTime = System.currentTimeMillis() - start;
-        System.out.println("Time consumes : " + endTime);
-        return finalthreshold;
-    }
-
-    private static int getMeans(List<Integer> data) {
-        int result = 0;
-        int size = data.size();
-        for (Integer i : data) {
-            result += i;
-        }
-        return (result / size);
-    }
 }
